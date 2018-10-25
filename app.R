@@ -32,7 +32,9 @@ query <-
 # Use SPARQL package to submit query and save results to a data frame
 qdata <- SPARQL(endpoint,query)
 GHGdata <- qdata$results
-theme_set(theme_gray(base_size = 18))
+
+# Set up custom theme for ggplot from the ggthemes package
+theme_set(theme_grey(base_size = 16))
 
 # automatically define periods, sectors and pollutants for chart options
 minyear <- as.numeric(min(GHGdata[,1]))
