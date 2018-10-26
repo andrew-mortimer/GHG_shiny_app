@@ -64,12 +64,6 @@ server<-function(input, output) {
     return(GHGdata[GHGdata$Sector%in%input$source_choose&GHGdata$Pollutant%in%input$pollutant_choose,])
   })
   
-# this next bit doesn't work  
-#  data_1=reactive({
-#    return(data_1[data_1$Pollutant%in%input$pollutant_choose,])
-#  })
-    
-  
   
   # Step 4 Use ggplot2 to draw a basic linechart
   output$plot <- renderPlot({
@@ -96,7 +90,8 @@ ui<-fluidPage(
   
   # Sidebar 
   sidebarPanel(
-#    headerPanel("not currently used"),
+    
+    tags$h3("Options"),
     
     # Specification of range within an interval
     sliderInput("range", "Select years:",
@@ -116,12 +111,26 @@ ui<-fluidPage(
       label = "Select pollutants", 
       choices = pollutantlist$Pollutant, selected="CO2", options = list(`actions-box` = TRUE), 
       multiple = TRUE
-    )
+    ),
+    tags$br(),
+    tags$br(),
+    tags$h3("Links"),
+    tags$a(href="https://statistics.gov.scot/downloads/cube-table?uri=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fgreenhouse-gas-emissions-by-source-sector", "Download the full dataset in .csv format"),
+    tags$br(),
+    tags$a(href="https://github.com/andrew-mortimer/GHG_shiny_app", "Download the source code used in this application"),
+    tags$br(),
+    tags$a(href="https://statistics.gov.scot", "www.statistics.gov.scot")
   ),
   
   mainPanel(
-    tags$head(tags$style("#plot{height:94vh !important;}")),
-    plotOutput('plot')
+    tabsetPanel(
+      tabPanel("Line chart",
+        tags$head(tags$style("#plot{height:94vh !important;}")),
+        plotOutput('plot')
+        ),
+      tabPanel("Table", "Table will go here"),
+      tabPanel("Summary statistics", "This will have growth rates between minyear and maxyear and a few other bits and bobs")
+      )
   )
 )
 
