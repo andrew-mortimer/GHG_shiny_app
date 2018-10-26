@@ -1,14 +1,20 @@
 
+
+#############################################
+# LOAD REQUIRED R PACKAGES                  #
+#############################################
+
 library(shiny)
 library(ggplot2)
 library(SPARQL) 
 library(dplyr)
+library(shinyWidgets)
+
 
 #############################################
 # RETRIEVE DATA FROM STATISTICS.GOV.SCOT    #
 #############################################
 
-# Step 1 - Set up preliminaries and define query
 # Define the statistics.gov.scot endpoint
 endpoint <- "http://statistics.gov.scot/sparql"
 
@@ -33,14 +39,18 @@ query <-
 qdata <- SPARQL(endpoint,query)
 GHGdata <- qdata$results
 
-# Set up custom theme for ggplot from the ggthemes package
-theme_set(theme_grey(base_size = 16))
+# Calculate all pollutants and all sources categories and append to GHGdata
+# HERE HERE HERE HERE
 
 # automatically define periods, sectors and pollutants for chart options
 minyear <- as.numeric(min(GHGdata[,1]))
 maxyear <- as.numeric(max(GHGdata[,1]))
 sectorlist <- as.list(distinct(select(GHGdata,Sector)))
 pollutantlist <- as.list(distinct(select(GHGdata,Pollutant)))
+
+# Set up custom theme for ggplot from the ggthemes package
+theme_set(theme_grey(base_size = 16))
+
 
 
 #######################################
@@ -65,14 +75,15 @@ server<-function(input, output) {
   output$plot <- renderPlot({
     
     # Step 5 Set it up so the year chooser updates the chart
-    g <- ggplot(data=subset( data_1(),  Year>= input$range[1] & Year<= input$range[2]), aes(x=Year, y=Emissions, group=interaction(Sector, Pollutant))) +     geom_line(aes(color=interaction(Sector, Pollutant)), size=2.0)+ theme(legend.position="bottom")
+    g <- ggplot(data=subset( data_1(),  Year>= input$range[1] & Year<= input$range[2]), aes(x=Year, y=Emissions, group=interaction(Sector, Pollutant))) +     geom_line(aes(color=interaction(Sector, Pollutant)), size=1.5)+ theme(legend.position="bottom")
     g <- g + labs (x="Year", y="Emissions (MtCO2e)") 
-    g <- g + guides(col = guide_legend(nrow = 5),byrow=TRUE)  + theme(legend.title=element_blank())
+    g <- g + guides(col = guide_legend(nrow = 10),byrow=TRUE)  + theme(legend.title=element_blank())
     
     print(g)
     
   })
 }
+
 
 #######################################
 # USER INTERFACE                      #
@@ -90,21 +101,26 @@ ui<-fluidPage(
     # Specification of range within an interval
     sliderInput("range", "Select years:",
                 min = minyear, max = maxyear, value = c(1998,maxyear),sep = ""),
-    
-    # Check boxes for the source sectors
-    checkboxGroupInput("source_choose", label = "Select source sectors",
-                       choices  = sectorlist$Sector, 
-                       selected = sectorlist$Sector
+
+    # Insert a picker widget for source sectors
+    pickerInput(
+      inputId = "source_choose", 
+      label = "Select source sectors", 
+      choices = sectorlist$Sector, selected=sectorlist$Sector, options = list(`actions-box` = TRUE), 
+      multiple = TRUE
     ),
-    # Check boxes for pollutants
-    checkboxGroupInput("pollutant_choose", label = "Select pollutants",
-                       choices  = pollutantlist$Pollutant, 
-                       selected = pollutantlist$Pollutant
+    
+    # Insert a picker widget for pollutants
+    pickerInput(
+      inputId = "pollutant_choose", 
+      label = "Select pollutants", 
+      choices = pollutantlist$Pollutant, selected="CO2", options = list(`actions-box` = TRUE), 
+      multiple = TRUE
     )
   ),
   
   mainPanel(
-    tags$head(tags$style("#plot{height:100vh !important;}")),
+    tags$head(tags$style("#plot{height:94vh !important;}")),
     plotOutput('plot')
   )
 )
