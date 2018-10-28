@@ -9,6 +9,7 @@ library(ggplot2)
 library(SPARQL) 
 library(dplyr)
 library(shinyWidgets)
+library(DT)
 
 
 #############################################
@@ -64,6 +65,11 @@ server<-function(input, output) {
     return(GHGdata[GHGdata$Sector%in%input$source_choose&GHGdata$Pollutant%in%input$pollutant_choose,])
   })
   
+  # output filtered data table
+  output$mytable = DT::renderDataTable({
+    data=subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], options = list(lengthMenu = c(10, 50, 100), pageLength = 10))
+  })
+
   
   # Step 4 Use ggplot2 to draw a basic linechart
   output$plot <- renderPlot({
@@ -86,7 +92,7 @@ server<-function(input, output) {
 ui<-fluidPage(
   
   # Title
-  titlePanel("GHG emissions by source sector and pollutant, Scotland"),
+  titlePanel(h1("GHG emissions by source sector and pollutant, Scotland")),
   
   # Sidebar 
   sidebarPanel(
@@ -128,11 +134,14 @@ ui<-fluidPage(
         tags$head(tags$style("#plot{height:94vh !important;}")),
         plotOutput('plot')
         ),
-      tabPanel("Table", "Table will go here"),
+      tabPanel("Table", 
+               DT::dataTableOutput('mytable')
+               ),
       tabPanel("Summary statistics", "This will have growth rates between minyear and maxyear and a few other bits and bobs")
       )
   )
 )
+
 
 #######################################
 # RUN SHINYAPP                        #
