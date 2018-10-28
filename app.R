@@ -92,6 +92,7 @@ server<-function(input, output) {
 ui<-fluidPage(
   
   # Title
+  tags$head(HTML("<title>GHG emissions by source sector and pollutant, Scotland</title>")),
   titlePanel(h1("GHG emissions by source sector and pollutant, Scotland")),
   
   # Sidebar 
