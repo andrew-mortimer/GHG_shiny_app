@@ -66,12 +66,12 @@ server<-function(input, output) {
   })
   
   # output filtered data table
-  output$mytable = DT::renderDataTable({
+  output$filtered_data = DT::renderDataTable({
     data=subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], options = list(lengthMenu = c(10, 50, 100), pageLength = 10))
   })
-
   
-  # Step 4 Use ggplot2 to draw a basic linechart
+            
+    # Step 4 Use ggplot2 to draw a basic linechart
   output$plot <- renderPlot({
     
     # Step 5 Set it up so the year chooser updates the chart
@@ -122,11 +122,9 @@ ui<-fluidPage(
     tags$br(),
     tags$br(),
     tags$h3("Links"),
-    tags$a(href="https://statistics.gov.scot/downloads/cube-table?uri=http%3A%2F%2Fstatistics.gov.scot%2Fdata%2Fgreenhouse-gas-emissions-by-source-sector", "Download the full dataset in .csv format"),
+    tags$a(href="https://github.com/andrew-mortimer/GHG_shiny_app", "Download the source code"),
     tags$br(),
-    tags$a(href="https://github.com/andrew-mortimer/GHG_shiny_app", "Download the source code used in this application"),
-    tags$br(),
-    tags$a(href="https://statistics.gov.scot", "www.statistics.gov.scot")
+    tags$a(href="https://statistics.gov.scot/data/greenhouse-gas-emissions-by-source-sector", "See original Data source")
   ),
   
   mainPanel(
@@ -136,7 +134,7 @@ ui<-fluidPage(
         plotOutput('plot')
         ),
       tabPanel("Table", 
-               DT::dataTableOutput('mytable')
+               DT::dataTableOutput('filtered_data')
                ),
       tabPanel("Summary statistics", "This will have growth rates between minyear and maxyear and a few other bits and bobs")
       )
