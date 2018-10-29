@@ -70,6 +70,19 @@ server<-function(input, output) {
     data=subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], options = list(lengthMenu = c(10, 50, 100), pageLength = 10))
   })
   
+  # Downloadable csv of selected dataset ----
+#  output$downloadData <- downloadHandler(content = subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], filename="downloadData"))
+# here a tutorial to make this work
+### https://shiny.rstudio.com/articles/download.html
+  
+  
+  
+  
+  
+  
+  
+  
+  
             
     # Step 4 Use ggplot2 to draw a basic linechart
   output$plot <- renderPlot({
@@ -119,6 +132,10 @@ ui<-fluidPage(
       choices = pollutantlist$Pollutant, selected="CO2", options = list(`actions-box` = TRUE), 
       multiple = TRUE
     ),
+    
+    # Download Button
+    downloadButton("downloadData", "Download these data"),
+    
     tags$br(),
     tags$br(),
     tags$h3("Links"),
