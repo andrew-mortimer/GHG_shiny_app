@@ -37,20 +37,27 @@ query <-
   ORDER BY ?Year ?Sector ?Pollutant"
 
 # Use SPARQL package to submit query and save results to a data frame
-qdata <- SPARQL(endpoint,query)
-GHGdata <- qdata$results
+    qdata <- SPARQL(endpoint,query)
+    GHGdata <- qdata$results
 
 # Calculate all pollutants and all sources categories and append to GHGdata
-# HERE HERE HERE HERE
+    tmp1 <- aggregate(Emissions ~ Year + Pollutant, GHGdata, sum)
+    tmp1$Sector <- "(TOTAL - ALL SECTORS)"
+    tmp2 <- aggregate(Emissions ~ Year + Sector, GHGdata, sum)
+    tmp2$Pollutant <- "(TOTAL - ALL POLLUTANTS)"
+    tmp3 <- aggregate(Emissions ~ Year, GHGdata, sum)
+    tmp3$Pollutant <- "(TOTAL - ALL POLLUTANTS)"
+    tmp3$Sector <- "(TOTAL - ALL SECTORS)"
+    GHGdata <- rbind(GHGdata,tmp1,tmp2,tmp3)
 
 # automatically define periods, sectors and pollutants for chart options
-minyear <- as.numeric(min(GHGdata[,1]))
-maxyear <- as.numeric(max(GHGdata[,1]))
-sectorlist <- as.list(distinct(select(GHGdata,Sector)))
-pollutantlist <- as.list(distinct(select(GHGdata,Pollutant)))
+    minyear <- as.numeric(min(GHGdata[,1]))
+    maxyear <- as.numeric(max(GHGdata[,1]))
+    sectorlist <- as.list(distinct(select(GHGdata,Sector)))
+    pollutantlist <- as.list(distinct(select(GHGdata,Pollutant)))
 
 # Set up custom theme for ggplot from the ggthemes package
-theme_set(theme_grey(base_size = 16))
+    theme_set(theme_grey(base_size = 16))
 
 
 
@@ -67,7 +74,7 @@ server<-function(input, output) {
   
   # output filtered data table
   output$filtered_data = DT::renderDataTable({
-    data=subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], options = list(lengthMenu = c(10, 50, 100), pageLength = 10))
+    data=subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], options = list(lengthMenu = c(25, 50, 100), pageLength = 25))
   })
   
   # Downloadable csv of selected dataset ----
@@ -90,7 +97,7 @@ server<-function(input, output) {
     # Step 5 Set it up so the year chooser updates the chart
     g <- ggplot(data=subset( data_1(),  Year>= input$range[1] & Year<= input$range[2]), aes(x=Year, y=Emissions, group=interaction(Sector, Pollutant))) +     geom_line(aes(color=interaction(Sector, Pollutant)), size=1.5)+ theme(legend.position="bottom")
     g <- g + labs (x="Year", y="Emissions (MtCO2e)") 
-    g <- g + guides(col = guide_legend(nrow = 10),byrow=TRUE)  + theme(legend.title=element_blank())
+    g <- g + guides(col = guide_legend(nrow = 5),byrow=TRUE)  + theme(legend.title=element_blank())
     
     print(g)
     
@@ -121,7 +128,7 @@ ui<-fluidPage(
     pickerInput(
       inputId = "source_choose", 
       label = "Select source sectors", 
-      choices = sectorlist$Sector, selected=sectorlist$Sector, options = list(`actions-box` = TRUE), 
+      choices = sectorlist$Sector, selected=sectorlist$Sector[1:10], options = list(`actions-box` = TRUE), 
       multiple = TRUE
     ),
     
@@ -129,12 +136,12 @@ ui<-fluidPage(
     pickerInput(
       inputId = "pollutant_choose", 
       label = "Select pollutants", 
-      choices = pollutantlist$Pollutant, selected="CO2", options = list(`actions-box` = TRUE), 
+      choices = pollutantlist$Pollutant, selected=pollutantlist$Pollutant[8], options = list(`actions-box` = TRUE), 
       multiple = TRUE
     ),
     
     # Download Button
-    downloadButton("downloadData", "Download these data"),
+    #downloadButton("downloadData", "Download these data"),
     
     tags$br(),
     tags$br(),
