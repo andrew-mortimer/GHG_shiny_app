@@ -12,7 +12,7 @@ https://github.com/GregorBoyd/ShinySparql
 5. This app now creates a data table populated with the result of the user selections.
 
 ### What's next?
-1. I'm having some difficulty allowing users to download their selected dataset as .csv
+1. I'm having some difficulty allowing users to download their selected dataset as .csv ; I can't help feeling that I'm a single comma away from making this work.
 2. Some basic summary statistics, e.g. growth rates between years and the like.
 
 
