@@ -1,8 +1,8 @@
 
 
-#############################################
-# LOAD REQUIRED R PACKAGES                  #
-#############################################
+#######################################################################################
+# LOAD REQUIRED R PACKAGES                                                            #
+#######################################################################################
 
 library(shiny)
 library(ggplot2)
@@ -12,9 +12,9 @@ library(shinyWidgets)
 library(DT)
 
 
-#############################################
-# RETRIEVE DATA FROM STATISTICS.GOV.SCOT    #
-#############################################
+#######################################################################################
+# RETRIEVE DATA FROM STATISTICS.GOV.SCOT                                              #
+#######################################################################################
 
 # Define the statistics.gov.scot endpoint
 endpoint <- "http://statistics.gov.scot/sparql"
@@ -39,6 +39,11 @@ query <-
 # Use SPARQL package to submit query and save results to a data frame
     qdata <- SPARQL(endpoint,query)
     GHGdata <- qdata$results
+    
+    
+#######################################################################################
+# MANIPULATE DATA                                                                     #
+#######################################################################################
 
 # Calculate all pollutants and all sources categories and append to GHGdata
     tmp1 <- aggregate(Emissions ~ Year + Pollutant, GHGdata, sum)
@@ -61,9 +66,9 @@ query <-
 
 
 
-#######################################
-# SERVER CODE                         #
-#######################################
+#######################################################################################
+# SERVER CODE                                                                         #
+#######################################################################################
 
 server<-function(input, output) {
   
@@ -78,19 +83,10 @@ server<-function(input, output) {
   })
   
   # Downloadable csv of selected dataset ----
-#  output$downloadData <- downloadHandler(content = subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], filename="downloadData"))
-# here a tutorial to make this work
-### https://shiny.rstudio.com/articles/download.html
+      #  output$downloadData <- downloadHandler(content = subset(data_1(),  Year>= input$range[1] & Year<= input$range[2], filename="downloadData"))
+      # here a tutorial to make this work
+      ### https://shiny.rstudio.com/articles/download.html
   
-  
-  
-  
-  
-  
-  
-  
-  
-            
     # Step 4 Use ggplot2 to draw a basic linechart
   output$plot <- renderPlot({
     
@@ -105,9 +101,9 @@ server<-function(input, output) {
 }
 
 
-#######################################
-# USER INTERFACE                      #
-#######################################
+#######################################################################################
+# USER INTERFACE CODE                                                                 #
+#######################################################################################
 
 ui<-fluidPage(
   
@@ -143,6 +139,7 @@ ui<-fluidPage(
     # Download Button
     #downloadButton("downloadData", "Download these data"),
     
+    # HTML STUFF - PROBABLY MOVE INTO A TAB ALONG WITH A DESCRIPTION
     tags$br(),
     tags$br(),
     tags$h3("Links"),
@@ -166,8 +163,8 @@ ui<-fluidPage(
 )
 
 
-#######################################
-# RUN SHINYAPP                        #
-#######################################
+#######################################################################################
+# RUN APPLICATION                                                                     #
+#######################################################################################
 
 shinyApp(ui, server)
