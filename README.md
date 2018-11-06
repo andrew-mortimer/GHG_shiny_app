@@ -12,9 +12,7 @@ https://github.com/GregorBoyd/ShinySparql
 5. This app now creates a data table populated with the result of the user selections.
 
 ### What's next?
-1. I'm having some difficulty allowing users to download their selected dataset as .csv ; I can't help feeling that I'm a single comma away from making this work.
-2. Some basic summary statistics, e.g. growth rates between years and the like.
-3. Shifting this whole thing from ggplot2 to googleVis as I really like mouseovers and I could probably animate something.
+Lots.  Have a look at the issues log for immediate priorities.
 
 
 ### Can I join in?
