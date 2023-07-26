@@ -20,3 +20,6 @@ Of course, go wild!  I'm particularly keen to get edits from people well-versed 
 
 ### Can I play with the latest version?
 https://androo.shinyapps.io/GHG_shiny_app/
+
+### Update
+now updated to use national communications data - having trouble with shinyapps.io at the moment, so I've put it here: https://posit.cloud/content/6247857 
