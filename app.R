@@ -25,8 +25,8 @@ query <-
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   SELECT ?Year ?Sector ?Pollutant ?Emissions
   WHERE {
-  ?s qb:dataSet <http://statistics.gov.scot/data/greenhouse-gas-emissions-by-source-sector>;
-  <http://statistics.gov.scot/def/dimension/greenhouseGasSourceSector> ?SectorURI;
+  ?s qb:dataSet <http://statistics.gov.scot/data/greenhouse-gas-emissions-by-national-communications-category>;
+  <http://statistics.gov.scot/def/dimension/nationalCommunicationCategories> ?SectorURI;
   <http://purl.org/linked-data/sdmx/2009/dimension#refPeriod> ?YearURI;
   <http://statistics.gov.scot/def/dimension/pollutant> ?PollutantURI;
   <http://statistics.gov.scot/def/measure-properties/count> ?Emissions.
